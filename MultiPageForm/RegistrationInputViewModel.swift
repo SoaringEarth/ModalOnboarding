@@ -14,7 +14,7 @@ class RegistrationInputViewModel: ObservableObject {
         case importFailed
     }
 
-    struct ProfileImage: Transferable {
+    struct TransferableProfileImage: Transferable {
         let image: Image
 
         static var transferRepresentation: some TransferRepresentation {
@@ -23,7 +23,7 @@ class RegistrationInputViewModel: ObservableObject {
                     throw TransferError.importFailed
                 }
                 let image = Image(uiImage: uiImage)
-                return ProfileImage(image: image)
+                return TransferableProfileImage(image: image)
             }
         }
     }
@@ -42,7 +42,7 @@ class RegistrationInputViewModel: ObservableObject {
     }
 
     private func loadTransferable(from imageSelection: PhotosPickerItem) -> Progress {
-        return imageSelection.loadTransferable(type: ProfileImage.self) { result in
+        return imageSelection.loadTransferable(type: TransferableProfileImage.self) { result in
             DispatchQueue.main.async {
                 guard imageSelection == self.imageSelection else {
                     print("Failed to get the selected item.")
