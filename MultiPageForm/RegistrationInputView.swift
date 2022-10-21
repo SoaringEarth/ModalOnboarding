@@ -7,6 +7,38 @@
 
 import SwiftUI
 
+struct PageConfig {
+    let title: String
+    let placeHolder: String?
+
+    let primaryButtonTitle: String
+    let secondaryButtonTitle: String
+    let tertiaryButtonTitle: String?
+}
+
+struct FormConfig {
+
+    // Fonts?
+
+
+    // Colors
+    let backgroundColor: Color = .orange.opacity(0.2)
+
+    let inputTextColor: Color = .orange
+
+    let PrimaryButtonTextColor: Color = .white
+    let PrimaryButtonBackgroundColor: Color = .black
+
+    let secondaryButtonTextColor: Color = .orange
+    let secondaryButtonBackgroundColor: Color = .clear
+
+    let tertiaryButtonTextColor: Color = .white
+    let tertiaryButtonBackgroundColor: Color = .blue
+
+    let progressBarFillColor: Color = .orange
+    let progressBarDefaultColor: Color = .gray
+}
+
 enum RegistrationInputType {
     case name
     case username
