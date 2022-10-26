@@ -28,18 +28,44 @@ struct SegmentedProgressView: View {
     }
 }
 
-struct RegistrationRouteBuilder {
-    static func registrationFlow(isPresented: Binding<Bool>, progress: Binding<Int>) -> some View {
-        RegistrationInputView(isPresented: isPresented,
-                              progress: progress,
-                              type: .name,
-                              nextView: RegistrationInputView(isPresented: isPresented,
-                                                              progress: progress,
-                                                              type: .username,
-                                                              nextView: RegistrationInputView(isPresented: isPresented,
-                                                                                              progress: progress,
-                                                                                              type: .profileImage,
-                                                                                              nextView: EmptyView())))
+struct OnBoardingView: View {
+
+    private struct OnBoardingBuilder {
+        static func onBoardingFlow(isPresented: Binding<Bool>, progress: Binding<Int>) -> some View {
+
+            let profileImageForm = RegistrationInputView(isPresented: isPresented,
+                                                         progress: progress,
+                                                         type: .profileImage,
+                                                         nextView: EmptyView())
+
+            let userNameForm = RegistrationInputView(isPresented: isPresented,
+                                                     progress: progress,
+                                                     type: .username,
+                                                     nextView: profileImageForm)
+
+            return RegistrationInputView(isPresented: isPresented,
+                                         progress: progress,
+                                         type: .name,
+                                         nextView: userNameForm)
+        }
+    }
+
+    @Binding var isPresented: Bool
+    @Binding var progressValue: Int
+
+    var body: some View {
+        GeometryReader { geo in
+            ZStack(alignment: .center) {
+                NavigationStack() {
+                    OnBoardingBuilder.onBoardingFlow(isPresented: $isPresented,
+                                                     progress: $progressValue)
+                }
+                SegmentedProgressView(value: $progressValue, maximum: 3)
+                    .frame(width: geo.size.width * 0.8)
+                    .frame(height: 32)
+                    .position(x: geo.size.width / 2, y: geo.size.height * 0.95)
+            }
+        }
     }
 }
 
@@ -58,18 +84,8 @@ struct InitialView: View {
             }
         }
         .sheet(isPresented: $showProfileDataEntry) {
-            GeometryReader { geo in
-                ZStack(alignment: .center) {
-                    NavigationStack() {
-                        RegistrationRouteBuilder.registrationFlow(isPresented: $showProfileDataEntry,
-                                                                  progress: $progressValue)
-                    }
-                    SegmentedProgressView(value: $progressValue, maximum: 3)
-                        .frame(width: geo.size.width * 0.8)
-                        .frame(height: 32)
-                        .position(x: geo.size.width / 2, y: geo.size.height * 0.95)
-                }
-            }
+            OnBoardingView(isPresented: $showProfileDataEntry,
+                           progressValue: $progressValue)
         }
     }
 }
